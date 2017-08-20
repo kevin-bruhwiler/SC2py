@@ -35,6 +35,7 @@ class Agent(base_agent.BaseAgent):
 		self.actor_optim = optim.Adam(self.actor.parameters(), lr=0.0001)
 		self.critic_optim = optim.Adam(self.critic.parameters(), lr=0.0001)
 		self.observation = None
+		self.first = True
 		if _CUDA:
 			self.actor.cuda()
 			self.critic.cuda()
@@ -70,14 +71,14 @@ class Agent(base_agent.BaseAgent):
 		if _MOVE_SCREEN in obs.observation['available_actions']:
 			new_observation = obs.observation["screen"][_PLAYER_RELATIVE].reshape((1,84,84))
 			action = self.getAction(new_observation.reshape((1,1,84,84)), noise=True)
-			target = list(np.clip(action, 0, 83)*84)
-			reward = obs.observation['score_cumulative']
-			print(reward)
-			if self.observation == None:
+			target = np.clip(action*84, 0, 83)[0].tolist()
+			reward = sum(obs.observation['score_cumulative'])
+			if self.first:
+				self.first = False
 				self.observation = np.zeros_like(new_observation)
 			self.memory.add((self.observation, action, reward, new_observation))
 			obs, acts, rewards, new_obs = self.memory.sample(self.batch_size)
-			
+
 			reward_labels = []
 			for i in range(len(new_obs)):
 				if not new_obs[i].any(None):
