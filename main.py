@@ -1,6 +1,11 @@
 from pysc2.env import sc2_env
 from pysc2.lib import features
 _PLAYER_RELATIVE = features.SCREEN_FEATURES.player_relative.index
+_PLAYER_FRIENDLY = 1
+_PLAYER_NEUTRAL = 3  # beacon/minerals
+_PLAYER_HOSTILE = 4
+
+import numpy as np
 import time, sys
 import agentmanager
 import gflags as flags
@@ -56,7 +61,7 @@ if __name__=='__main__':
 	num_episodes = 10000
 	for episode in range(num_episodes):
 		with sc2_env.SC2Env(
-                    "MoveToBeacon",
+                    "CollectMineralShards",
                     agent_race='T',
                     bot_race='P',
                     difficulty="1",
