@@ -37,15 +37,14 @@ def run_loop(agents, env):
 				actions.append(out[0])
 				targets.append(out[1])
 			timesteps = env.step(actions)
-			next_observation = timesteps[0].observation['screen'][_PLAYER_RELATIVE].reshape((1,64,64))
 			reward = timesteps[0].reward
 			done = timesteps[0].last()
 			if done:
-				reward = None
+				next_observation = None
 				for agent, action in zip(agents, targets):
 					agent.train(observation, action, reward, next_observation)
 				break
-
+			next_observation = timesteps[0].observation['screen'][_PLAYER_RELATIVE].reshape((1,64,64))
 			for agent, action in zip(agents, targets):
 				agent.train(observation, action, reward, next_observation)
 
