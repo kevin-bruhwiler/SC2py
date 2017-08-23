@@ -59,15 +59,14 @@ class Agent(base_agent.BaseAgent):
 	def predictAction(self, x):
 		return self.actor.forward(x)
 
-	def step(self, obs, x, noise=False):
+	def step(self, obs, x, noise=True):
 		super(Agent, self).step(obs)
 		if _MOVE_SCREEN in obs.observation['available_actions']:
 			y = self.actor.forward(self.toVariable(x))
 			action = y.cpu().data.numpy().astype(float)
 			if noise:
 				action += self.noise.getNoise(action)
-			action = (np.clip(action, 0, 1)*63).tolist()[0]
-			print(action)
+			action = (np.clip(action, 0, 63)).tolist()[0]
 			return actions.FunctionCall(_MOVE_SCREEN, [_NOT_QUEUED, action]), action
 		else:
 			return actions.FunctionCall(_SELECT_ARMY, [_SELECT_ALL]), [-1,-1]
@@ -78,7 +77,7 @@ class Agent(base_agent.BaseAgent):
 		
 		reward_labels = []
 		for i in range(len(new_obs)):
-			if not new_obs[i].any(None):
+			if not new_obs[i][0].any(None):
 				n_o = self.toVariable(np.asarray(new_obs[i])).unsqueeze(0)
 				future_actions = self.predictAction(n_o)
 				future_rewards = self.getReward(n_o, future_actions)

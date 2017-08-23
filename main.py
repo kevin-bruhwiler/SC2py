@@ -41,6 +41,9 @@ def run_loop(agents, env):
 			reward = timesteps[0].reward
 			done = timesteps[0].last()
 			if done:
+				reward = [None]
+				for agent, action in zip(agents, targets):
+					agent.train(observation, action, reward, next_observation)
 				break
 
 			for agent, action in zip(agents, targets):
@@ -61,7 +64,7 @@ if __name__=='__main__':
 	num_episodes = 10000
 	for episode in range(num_episodes):
 		with sc2_env.SC2Env(
-                    "CollectMineralShards",
+                    "MoveToBeacon",
                     agent_race='T',
                     bot_race='P',
                     difficulty="1",

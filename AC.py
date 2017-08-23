@@ -33,6 +33,7 @@ class Actor(nn.Module):
 		x = self.relu(x)
 		x = self.fc2(x)
 		x = self.sigmoid(x)
+		x = x * 63
 		return x
 		
 class Critic(nn.Module):
