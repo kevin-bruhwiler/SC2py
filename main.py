@@ -41,7 +41,7 @@ def run_loop(agents, env):
 			reward = timesteps[0].reward
 			done = timesteps[0].last()
 			if done:
-				reward = [None]
+				reward = None
 				for agent, action in zip(agents, targets):
 					agent.train(observation, action, reward, next_observation)
 				break

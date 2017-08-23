@@ -77,7 +77,7 @@ class Agent(base_agent.BaseAgent):
 		
 		reward_labels = []
 		for i in range(len(new_obs)):
-			if not new_obs[i][0].any(None):
+			if new_obs[i]:
 				n_o = self.toVariable(np.asarray(new_obs[i])).unsqueeze(0)
 				future_actions = self.predictAction(n_o)
 				future_rewards = self.getReward(n_o, future_actions)
