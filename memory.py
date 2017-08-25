@@ -14,7 +14,7 @@ class Memory():
 			batch = list(self.mem)
 		else:
 			batch = random.sample(self.mem, num)
-		observations = np.asarray([b[0] for b in batch])
+		observations = np.asarray([b[0] for b in batch]).reshape(-1,2,64,64)
 		actions = np.asarray([b[1] for b in batch])
 		rewards = np.asarray([b[2] for b in batch])
 		new_observations = [b[3] for b in batch]

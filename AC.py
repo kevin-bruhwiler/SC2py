@@ -4,10 +4,10 @@ import torch.nn as nn
 class Actor(nn.Module):
 	def __init__(self, input_size, hidden_size, output_size):
 		super(Actor, self).__init__()
-		self.conv1 = nn.Conv2d(1, 2, 3, padding=1)
-		self.conv2 = nn.Conv2d(2, 4, 3, padding=1)
-		self.conv3 = nn.Conv2d(4, 8, 3, padding=1)
-		self.conv4 = nn.Conv2d(8, 16, 3, padding=1)
+		self.conv1 = nn.Conv2d(2, 4, 3, padding=1)
+		self.conv2 = nn.Conv2d(4, 8, 3, padding=1)
+		self.conv3 = nn.Conv2d(8, 16, 3, padding=1)
+		self.conv4 = nn.Conv2d(16, 32, 3, padding=1)
 		self.maxpool = nn.MaxPool2d(2)
 		self.fc1 = nn.Linear(input_size, hidden_size)
 		self.fc2 = nn.Linear(hidden_size, output_size)
@@ -33,16 +33,15 @@ class Actor(nn.Module):
 		x = self.relu(x)
 		x = self.fc2(x)
 		x = self.sigmoid(x)
-		x = x * 63
 		return x
 		
 class Critic(nn.Module):
 	def __init__(self, input_size, hidden_size, num_actions):
 		super(Critic, self).__init__()
-		self.conv1 = nn.Conv2d(1, 2, 3, padding=1)
-		self.conv2 = nn.Conv2d(2, 4, 3, padding=1)
-		self.conv3 = nn.Conv2d(4, 8, 3, padding=1)
-		self.conv4 = nn.Conv2d(8, 16, 3, padding=1)
+		self.conv1 = nn.Conv2d(2, 4, 3, padding=1)
+		self.conv2 = nn.Conv2d(4, 8, 3, padding=1)
+		self.conv3 = nn.Conv2d(8, 16, 3, padding=1)
+		self.conv4 = nn.Conv2d(16, 32, 3, padding=1)
 		self.maxpool = nn.MaxPool2d(2)
 		self.fc1 = nn.Linear(input_size+num_actions, hidden_size)
 		self.fc2 = nn.Linear(hidden_size, 1)
