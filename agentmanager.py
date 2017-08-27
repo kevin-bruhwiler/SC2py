@@ -30,8 +30,8 @@ class Agent(base_agent.BaseAgent):
 		super(Agent, self).__init__()
 		self.tau = 0.001
 		self.noise = noise.Noise()
-		self.actor = AC.Actor(512, 512, 1)
-		self.critic = AC.Critic(512, 512, 1)
+		self.actor = AC.Actor(4096, 4096, 1)
+		self.critic = AC.Critic(4096, 4096, 1)
 		self.target_critic = copy.deepcopy(self.critic)
 		self.memory = memory.Memory(1000000)
 		self.batch_size = 32
@@ -44,7 +44,7 @@ class Agent(base_agent.BaseAgent):
 			self.target_critic.cuda()
 		self.steps = 0
 		self.current_action = None
-		self.current_location = None
+		self.current_location = [-1,-1]
 	
 	def setup(self, obs_spec, action_spec):
 		super(Agent, self).setup(obs_spec, action_spec)
@@ -97,7 +97,7 @@ class Agent(base_agent.BaseAgent):
 		theta = math.radians(action * 360)
 		w = selected.shape[3]-1
 		h = selected.shape[2]-1
-		radius = 20
+		radius = 3
 		X = np.clip(radius * math.cos(theta) + x,0,w)
 		Y = np.clip(radius * math.sin(theta) + y,0,h)
 		return [X, Y]
@@ -107,8 +107,8 @@ class Agent(base_agent.BaseAgent):
 		self.steps += 1
 		if _MOVE_SCREEN in obs.observation['available_actions']:
 			self.getLocation(selected)
-			if not self.steps % 10 == 0:
-				return actions.FunctionCall(_NO_OP, []), self.current_action
+			#if not self.steps % 1 == 0:
+				#return actions.FunctionCall(_NO_OP, []), self.current_action
 			y = self.actor.forward(self.toVariable(x))
 			action = y.cpu().data.numpy().astype(float)
 			if noise:
